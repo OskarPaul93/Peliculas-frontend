@@ -1,11 +1,12 @@
 const API_URL = "http://localhost:8080/peliculas";
 
-// Pega aquí tu token JWT de administrador
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbl9wZWxpY3VsYXMiLCJyb2wiOiJBRE1JTiIsImlhdCI6MTc5NTI3MDg5OSwiZXhwIjoxNzk1MjcyNjk5fQ.tNiQcWsNXMXvIOVT7Ziz4q3chLmuQtizMliTDz2S-_Y";
-
 // Obtener todas las películas
 export const listarPeliculas = async () => {
     try {
+
+        // Obtener el token guardado en el navegador
+        const TOKEN = localStorage.getItem("token");
+
         const respuesta = await fetch(API_URL, {
             method: "GET",
             headers: {
