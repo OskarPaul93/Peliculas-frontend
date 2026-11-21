@@ -4,10 +4,12 @@ import Navbar from "./components/Navbar";
 import PeliculaCard from "./components/PeliculaCard";
 import Login from "./components/Login";
 import FormularioPelicula from "./components/FormularioPelicula";
+import EditarPelicula from "./components/EditarPelicula";
 
 import {
     listarPeliculas,
-    registrarPelicula
+    registrarPelicula,
+    actualizarPelicula
 } from "./services/PeliculaService";
 
 import "./App.css";
@@ -21,33 +23,37 @@ function App() {
     const [peliculas, setPeliculas] = useState([]);
     const [cargando, setCargando] = useState(true);
 
+    // Película seleccionada para editar
+    const [peliculaEditar, setPeliculaEditar] = useState(null);
+
     // Cargar las películas
-    useEffect(() => {
+    
+useEffect(() => {
 
-        if (!autenticado) {
+    if (!autenticado) {
+        return;
+    }
+
+    const cargarPeliculas = async () => {
+
+        try {
+            const datos = await listarPeliculas();
+            setPeliculas(datos);
+
+        } catch (error) {
+    console.error(
+        "No se pudieron cargar las películas:",
+        error instanceof Error ? error.message : error
+    );
+} finally {
             setCargando(false);
-            return;
         }
+    };
 
-        const cargarPeliculas = async () => {
+    cargarPeliculas();
 
-            setCargando(true);
+}, [autenticado]);
 
-            try {
-                const datos = await listarPeliculas();
-                setPeliculas(datos);
-
-            } catch (error) {
-                console.error("No se pudieron cargar las películas");
-
-            } finally {
-                setCargando(false);
-            }
-        };
-
-        cargarPeliculas();
-
-    }, [autenticado]);
 
     // Registrar una película
     const manejarRegistro = async (datos) => {
@@ -60,6 +66,22 @@ function App() {
         ]);
     };
 
+    // Actualizar una película
+    const manejarActualizacion = async (id, datos) => {
+
+        const peliculaActualizada = await actualizarPelicula(id, datos);
+
+        setPeliculas((peliculasAnteriores) =>
+            peliculasAnteriores.map((pelicula) =>
+                pelicula.id === id
+                    ? peliculaActualizada
+                    : pelicula
+            )
+        );
+
+        setPeliculaEditar(null);
+    };
+
     // Cerrar sesión
     const cerrarSesion = () => {
 
@@ -69,9 +91,10 @@ function App() {
 
         setAutenticado(false);
         setPeliculas([]);
+        setPeliculaEditar(null);
     };
 
-    // Mostrar el formulario de login
+    // Mostrar login
     if (!autenticado) {
         return (
             <Login
@@ -89,14 +112,23 @@ function App() {
 
             <p>Bienvenido a nuestra aplicación de películas.</p>
 
-            {/* Formulario visible solamente para ADMIN */}
+            {/* Formulario de registro para ADMIN */}
             {localStorage.getItem("rol") === "ADMIN" && (
                 <FormularioPelicula
                     onPeliculaRegistrada={manejarRegistro}
                 />
             )}
 
-            {/* Catálogo de películas */}
+            {/* Formulario de edición */}
+            {peliculaEditar && (
+                <EditarPelicula
+                    pelicula={peliculaEditar}
+                    onActualizar={manejarActualizacion}
+                    onCancelar={() => setPeliculaEditar(null)}
+                />
+            )}
+
+            {/* Catálogo */}
             <div className="catalogo">
 
                 {cargando ? (
@@ -109,6 +141,7 @@ function App() {
                         <PeliculaCard
                             key={pelicula.id}
                             pelicula={pelicula}
+                            onEditar={() => setPeliculaEditar(pelicula)}
                         />
                     ))
 

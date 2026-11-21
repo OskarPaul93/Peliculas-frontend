@@ -44,3 +44,25 @@ export const registrarPelicula = async (pelicula) => {
 
     return await respuesta.json();
 };
+
+
+// Actualizar una película
+export const actualizarPelicula = async (id, pelicula) => {
+
+    const TOKEN = localStorage.getItem("token");
+
+    const respuesta = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+            "Authorization": `Bearer ${TOKEN}`
+        },
+        body: pelicula
+    });
+
+    if (!respuesta.ok) {
+        throw new Error("Error al actualizar la película");
+    }
+
+    return await respuesta.json();
+};
+
