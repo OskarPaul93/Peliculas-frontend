@@ -25,3 +25,22 @@ export const listarPeliculas = async () => {
         throw error;
     }
 };
+
+// Registrar una película
+export const registrarPelicula = async (pelicula) => {
+    const TOKEN = localStorage.getItem("token");
+
+    const respuesta = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${TOKEN}`
+        },
+        body: pelicula
+    });
+
+    if (!respuesta.ok) {
+        throw new Error("Error al registrar la película");
+    }
+
+    return await respuesta.json();
+};
