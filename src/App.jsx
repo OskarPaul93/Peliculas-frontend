@@ -1,12 +1,36 @@
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import PeliculaCard from "./components/PeliculaCard";
+import { listarPeliculas } from "./services/PeliculaService";
+import "./App.css";
+
 function App() {
-    const pelicula = {
-        titulo: "Interestelar",
-        genero: "Ciencia ficción",
-        descripcion: "Una aventura a través del espacio.",
-        imagen: ""
-    };
+
+    // Estado para almacenar las películas
+    const [peliculas, setPeliculas] = useState([]);
+
+    // Estado para controlar la carga
+    const [cargando, setCargando] = useState(true);
+
+    // Consultar las películas al cargar el componente
+    useEffect(() => {
+
+        const cargarPeliculas = async () => {
+            try {
+                const datos = await listarPeliculas();
+                setPeliculas(datos);
+
+            } catch (error) {
+                console.error("No se pudieron cargar las películas");
+
+            } finally {
+                setCargando(false);
+            }
+        };
+
+        cargarPeliculas();
+
+    }, []);
 
     return (
         <div>
@@ -16,8 +40,21 @@ function App() {
             <p>Bienvenido a nuestra aplicación de películas.</p>
 
             <div className="catalogo">
-              <PeliculaCard pelicula={pelicula} />
-            </div>        
+
+                {cargando ? (
+                    <p>Cargando películas...</p>
+                ) : peliculas.length > 0 ? (
+                    peliculas.map((pelicula) => (
+                        <PeliculaCard
+                            key={pelicula.id}
+                            pelicula={pelicula}
+                        />
+                    ))
+                ) : (
+                    <p>No hay películas registradas.</p>
+                )}
+
+            </div>
         </div>
     );
 }
