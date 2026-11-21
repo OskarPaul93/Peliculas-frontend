@@ -1,4 +1,9 @@
-function PeliculaCard({ pelicula, onEditar, onEliminar }) {
+function PeliculaCard({
+    pelicula,
+    onEditar,
+    onEliminar,
+    onVerDetalles
+}) {
 
     return (
         <div className="pelicula-card">
@@ -16,7 +21,7 @@ function PeliculaCard({ pelicula, onEditar, onEliminar }) {
 
                 <p>{pelicula.descripcion}</p>
 
-                <button>
+                <button onClick={onVerDetalles}>
                     Ver detalles
                 </button>
 

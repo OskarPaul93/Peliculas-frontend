@@ -5,6 +5,7 @@ import PeliculaCard from "./components/PeliculaCard";
 import Login from "./components/Login";
 import FormularioPelicula from "./components/FormularioPelicula";
 import EditarPelicula from "./components/EditarPelicula";
+import DetallePelicula from "./components/DetallePelicula";
 
 import {
     listarPeliculas,
@@ -28,6 +29,8 @@ function App() {
     );
 
     const [peliculaEditar, setPeliculaEditar] = useState(null);
+
+    const [peliculaDetalle, setPeliculaDetalle] = useState(null);
 
     // Cargar las películas
     useEffect(() => {
@@ -127,6 +130,7 @@ function App() {
         setAutenticado(false);
         setPeliculas([]);
         setPeliculaEditar(null);
+        setPeliculaDetalle(null);
     };
 
     // Mostrar login
@@ -144,6 +148,14 @@ function App() {
         <div>
 
             <Navbar onLogout={cerrarSesion} />
+
+            {/* Ventana de detalles */}
+            {peliculaDetalle && (
+                <DetallePelicula
+                    pelicula={peliculaDetalle}
+                    onCerrar={() => setPeliculaDetalle(null)}
+                />
+            )}
 
             <h1>Catálogo de Películas</h1>
 
@@ -185,6 +197,7 @@ function App() {
                             pelicula={pelicula}
                             onEditar={() => setPeliculaEditar(pelicula)}
                             onEliminar={() => manejarEliminacion(pelicula.id)}
+                            onVerDetalles={() => setPeliculaDetalle(pelicula)}
                         />
 
                     ))
