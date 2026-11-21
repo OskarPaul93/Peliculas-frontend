@@ -66,3 +66,23 @@ export const actualizarPelicula = async (id, pelicula) => {
     return await respuesta.json();
 };
 
+
+ // Eliminar una película
+export const eliminarPelicula = async (id) => {
+
+    const TOKEN = localStorage.getItem("token");
+
+    const respuesta = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${TOKEN}`
+        }
+    });
+
+    if (!respuesta.ok) {
+        throw new Error("Error al eliminar la película");
+    }
+
+    return true;
+};
+

@@ -1,4 +1,4 @@
-function PeliculaCard({ pelicula, onEditar }) {
+function PeliculaCard({ pelicula, onEditar, onEliminar }) {
 
     return (
         <div className="pelicula-card">
@@ -21,9 +21,22 @@ function PeliculaCard({ pelicula, onEditar }) {
                 </button>
 
                 {localStorage.getItem("rol") === "ADMIN" && (
-                    <button onClick={onEditar}>
-                        Editar
-                    </button>
+
+                    <div className="acciones-pelicula">
+
+                        <button onClick={onEditar}>
+                            Editar
+                        </button>
+
+                        <button
+                            onClick={onEliminar}
+                            className="btn-eliminar"
+                        >
+                            Eliminar
+                        </button>
+
+                    </div>
+
                 )}
 
             </div>
